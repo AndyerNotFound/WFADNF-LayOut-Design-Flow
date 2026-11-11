@@ -21,7 +21,7 @@ fun FlowProject.toXmlText(): String {
         appendLine("<layout-flow version=\"1.0\" generator=\"LayOut Flow\" exported-at=\"${esc(stamp)}\">")
         appendLine("  <meta name=\"${esc(name)}\" nodes=\"${nodes.size}\" connections=\"${edges.size}\" grid=\"$gridSize\" snap=\"$snapToGrid\" />")
         appendLine("  <nodes>")
-        for (node in project.nodes) {
+        for (node in nodes) {
             append("    <node id=\"${esc(node.id)}\" spec=\"${esc(node.specId)}\" name=\"${esc(node.name)}\"")
             append(" platform=\"${esc(node.platform)}\" kind=\"${esc(node.kind)}\"")
             append(" x=\"${fmt(node.x)}\" y=\"${fmt(node.y)}\" width=\"${fmt(node.width)}\" height=\"${fmt(node.height)}\"")
@@ -92,7 +92,7 @@ fun FlowProject.toSvgText(): String {
             appendLine("<rect x=\"${fmt(mx - labelWidth / 2f)}\" y=\"${fmt(my - 10f)}\" width=\"${fmt(labelWidth)}\" height=\"20\" rx=\"10\" fill=\"#EADDFF\" stroke=\"#CAC4D0\" stroke-width=\"0.8\"/>")
             appendLine("<text x=\"${fmt(mx)}\" y=\"${fmt(my + 4f)}\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"9.5\" fill=\"#21005D\">$text</text>")
         }
-        for (node in project.nodes) {
+        for (node in nodes) {
             val x = node.x
             val y = node.y
             val platform = platformInfo(node.platform)

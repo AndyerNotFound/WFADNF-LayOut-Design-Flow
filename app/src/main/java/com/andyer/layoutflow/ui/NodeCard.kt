@@ -353,7 +353,7 @@ private fun NodePreview(node: FlowNode, accent: Color, modifier: Modifier = Modi
             "iconButton" -> Box(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .size(min(node.width.value, node.height.value).dp * 0.7f)
+                    .size(min(node.width, node.height).dp * 0.7f)
                     .clip(CircleShape)
                     .background(scheme.surfaceVariant),
                 contentAlignment = Alignment.Center,
@@ -494,7 +494,7 @@ private fun NodePreview(node: FlowNode, accent: Color, modifier: Modifier = Modi
             "avatar" -> Box(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .size(min(node.width.value, node.height.value).dp * 0.72f)
+                    .size(min(node.width, node.height).dp * 0.72f)
                     .clip(CircleShape)
                     .background(accent.copy(alpha = 0.22f)),
                 contentAlignment = Alignment.Center,
@@ -507,7 +507,7 @@ private fun NodePreview(node: FlowNode, accent: Color, modifier: Modifier = Modi
             "icon" -> Box(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .size(min(node.width.value, node.height.value).dp * 0.62f)
+                    .size(min(node.width, node.height).dp * 0.62f)
                     .clip(CircleShape)
                     .background(scheme.secondaryContainer),
                 contentAlignment = Alignment.Center,
@@ -517,7 +517,7 @@ private fun NodePreview(node: FlowNode, accent: Color, modifier: Modifier = Modi
             "badge" -> Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(min(node.height.value * 0.55f, 22f).dp)
+                    .height(min(node.height * 0.55f, 22f).dp)
                     .align(Alignment.Center)
                     .clip(RoundedCornerShape(11.dp))
                     .background(scheme.error),
@@ -599,7 +599,7 @@ private fun NodePreview(node: FlowNode, accent: Color, modifier: Modifier = Modi
             "snackbar" -> Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(min(node.height.value * 0.5f, 30f).dp)
+                    .height(min(node.height * 0.5f, 30f).dp)
                     .align(Alignment.Center)
                     .clip(RoundedCornerShape(8.dp))
                     .background(scheme.inverseSurface)

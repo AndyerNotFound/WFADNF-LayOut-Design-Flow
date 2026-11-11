@@ -57,7 +57,7 @@ private fun stroke(color: Int, width: Float = 1f, alpha: Int = 255): Paint = Pai
 }
 
 private fun textPaint(size: Float, color: Int, bold: Boolean = false): Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-    color = color
+    this.color = color
     textSize = size
     typeface = if (bold) boldTypeface else normalTypeface
 }
