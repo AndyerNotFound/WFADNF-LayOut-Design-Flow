@@ -81,8 +81,9 @@ The repository contains a single `app` module and a GitHub Actions workflow at `
 
 - A push to `main` runs unit tests, assembles a signed release APK and uploads it as a workflow artifact.
 - A tag such as `v0.1.0` creates a GitHub release with the APK and `SHA256SUMS.txt`.
-- A manual workflow dispatch with a version input creates the same release without requiring a local tag. Manual and tag builds also run a Compose UI smoke test on an Android 34 emulator.
+- A manual workflow dispatch with a version input creates the same release without requiring a local tag.
 - When `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` and `ANDROID_KEY_PASSWORD` are configured, the release is signed with that keystore. Otherwise the debug key is used and the workflow emits a warning.
+- Instrumentation test sources are compiled on every build; `connectedDebugAndroidTest` can be run separately on an emulator or device.
 
 No local Gradle or Android SDK installation is required to produce a build.
 
