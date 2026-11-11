@@ -243,6 +243,7 @@ fun FlowCanvas(
 
         Box(Modifier.fillMaxSize()) {
             for (edge in state.project.edges) {
+                if (state.scale < 0.45f && edge.id != state.selectedEdgeId) continue
                 val screen = screenEdge(state.project, edge, state.pan, state.scale, density) ?: continue
                 val (midX, midY) = screen.pointAt(0.5f)
                 EdgeLabel(
@@ -261,18 +262,24 @@ fun FlowCanvas(
             color = scheme.surfaceContainerHigh.copy(alpha = 0.92f),
             tonalElevation = 1.dp,
         ) {
-            Row(
+            Column(
                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
-                    "${state.project.nodes.size} 元件 · ${state.project.edges.size} 连线 · ${(state.scale * 100).roundToInt()}%",
-                    fontSize = 9.sp,
-                    color = scheme.onSurfaceVariant,
-                )
-                if (state.project.snapToGrid) {
-                    Text(" · 吸附", fontSize = 9.sp, color = scheme.primary)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        "${state.project.nodes.size} 元件 · ${state.project.edges.size} 连线 · ${(state.scale * 100).roundToInt()}%",
+                        fontSize = 9.sp,
+                        color = scheme.onSurfaceVariant,
+                    )
+                    if (state.project.snapToGrid) {
+                        Text(" · 吸附", fontSize = 9.sp, color = scheme.primary)
+                    }
                 }
+                Text(
+                    if (state.scale < 0.45f) "放大后显示连线标注" else "长按元件拖入 · 拖动圆点连线",
+                    fontSize = 8.sp,
+                    color = scheme.outline,
+                )
             }
         }
     }

@@ -84,7 +84,12 @@ jobs:
           profile: pixel_5
           disable-animations: true
           emulator-boot-timeout: 1200
-          script: ./gradlew --no-daemon connectedDebugAndroidTest
+          script: |
+            ./gradlew --no-daemon connectedDebugAndroidTest
+            mkdir -p out
+            adb shell am start -n com.andyer.layoutflow/.MainActivity
+            sleep 4
+            adb exec-out screencap -p > out/smoke.png
 
       - name: Rename APK
         run: |
