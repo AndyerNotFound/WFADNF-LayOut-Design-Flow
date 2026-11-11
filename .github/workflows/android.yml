@@ -89,8 +89,16 @@ jobs:
       - name: Rename APK
         run: |
           mkdir -p out
-          NAME="${GITHUB_REF_NAME//\//-}"
-          cp app/build/outputs/apk/release/app-release.apk "out/LayOutFlow-${NAME}.apk"
+          VERSION="${{ github.event.inputs.version }}"
+          if [ -n "$VERSION" ]; then
+            NAME="LayOutFlow-${VERSION}.apk"
+          elif [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            NAME="LayOutFlow-${GITHUB_REF_NAME#v}.apk"
+          else
+            NAME="LayOutFlow-${GITHUB_REF_NAME//\//-}.apk"
+          fi
+          cp app/build/outputs/apk/release/app-release.apk "out/$NAME"
+          echo "APK_NAME=$NAME" >> "$GITHUB_ENV"
 
       - name: Generate checksums
         run: cd out && sha256sum *.apk > SHA256SUMS.txt && cat SHA256SUMS.txt
@@ -112,9 +120,7 @@ jobs:
           else
             VERSION="${GITHUB_REF_NAME#v}"
           fi
-          APK="LayOutFlow-${VERSION}.apk"
-          cp app/build/outputs/apk/release/app-release.apk "$APK"
           gh release view "v${VERSION}" > /dev/null 2>&1 \
-            && gh release upload "v${VERSION}" "$APK" out/SHA256SUMS.txt --clobber \
-            || gh release create "v${VERSION}" "$APK" out/SHA256SUMS.txt \
-                 --title "LayOut Flow v${VERSION}" --generate-notes
+            && gh release upload "v${VERSION}" "out/${APK_NAME}" out/SHA256SUMS.txt --clobber \
+            || gh release create "v${VERSION}" "out/${APK_NAME}" out/SHA256SUMS.txt \
+                 --title "LayOut Flow v${VERSION}" --notes-file RELEASE_NOTES.md

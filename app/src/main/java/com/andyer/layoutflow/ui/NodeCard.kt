@@ -166,7 +166,7 @@ fun FlowNodeCard(
                 .graphicsLayer { alpha = node.opacity.coerceIn(0.1f, 1f) }
                 .shadow(node.elevation.coerceAtLeast(0f).dp, shape)
                 .clip(shape)
-                .background(scheme.surfaceContainerLow)
+                .background(scheme.surfaceContainerLowest)
                 .border(borderWidth, borderColor, shape),
         ) {
             NodePreview(node = node, accent = accentColor(node.accent), modifier = Modifier.fillMaxSize())
