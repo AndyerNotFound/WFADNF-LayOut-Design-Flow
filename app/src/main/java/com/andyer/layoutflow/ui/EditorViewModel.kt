@@ -174,7 +174,17 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
     private fun normalize(project: FlowProject): FlowProject {
         val maxNode = project.nodes.mapNotNull { it.id.removePrefix("n").toIntOrNull() }.maxOrNull() ?: 0
         val maxEdge = project.edges.mapNotNull { it.id.removePrefix("e").toIntOrNull() }.maxOrNull() ?: 0
+        val safeNodes = project.nodes.map { node ->
+            node.copy(
+                width = node.width.coerceIn(24f, 4000f),
+                height = node.height.coerceIn(16f, 4000f),
+                corner = node.corner.coerceIn(0f, 120f),
+                elevation = node.elevation.coerceIn(0f, 24f),
+                opacity = node.opacity.coerceIn(0.1f, 1f),
+            )
+        }
         return project.copy(
+            nodes = safeNodes,
             nextNodeSeq = max(project.nextNodeSeq, maxNode + 1),
             nextEdgeSeq = max(project.nextEdgeSeq, maxEdge + 1),
         )

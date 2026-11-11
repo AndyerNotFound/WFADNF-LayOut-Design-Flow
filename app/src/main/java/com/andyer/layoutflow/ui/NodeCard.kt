@@ -77,7 +77,7 @@ fun FlowNodeCard(
     val latestPan by rememberUpdatedState(pan)
     val latestScale by rememberUpdatedState(scale)
     val latestDensity by rememberUpdatedState(density)
-    val shape = RoundedCornerShape(node.corner.dp)
+    val shape = RoundedCornerShape(node.corner.coerceAtLeast(0f).dp)
     val borderColor = when {
         selected -> scheme.primary
         connectionTarget -> scheme.tertiary
@@ -163,8 +163,8 @@ fun FlowNodeCard(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .graphicsLayer { alpha = node.opacity }
-                .shadow(node.elevation.dp, shape)
+                .graphicsLayer { alpha = node.opacity.coerceIn(0.1f, 1f) }
+                .shadow(node.elevation.coerceAtLeast(0f).dp, shape)
                 .clip(shape)
                 .background(scheme.surfaceContainerLow)
                 .border(borderWidth, borderColor, shape),
