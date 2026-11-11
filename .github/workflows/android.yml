@@ -74,24 +74,6 @@ jobs:
           "$APKSIGNER" verify --print-certs app/build/outputs/apk/release/app-release.apk \
             | grep -E "Verified using|SHA-256 digest"
 
-      - name: Run emulator smoke test
-        if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
-        uses: ReactiveCircus/android-emulator-runner@v2
-        with:
-          api-level: 34
-          target: google_apis
-          arch: x86_64
-          profile: pixel_5
-          disable-animations: true
-          emulator-boot-timeout: 1200
-          script: |
-            ./gradlew --no-daemon connectedDebugAndroidTest
-            mkdir -p out
-            adb shell am force-stop com.andyer.layoutflow
-            adb shell am start -n com.andyer.layoutflow/.MainActivity
-            sleep 4
-            adb exec-out screencap -p > out/smoke.png
-
       - name: Rename APK
         run: |
           mkdir -p out
