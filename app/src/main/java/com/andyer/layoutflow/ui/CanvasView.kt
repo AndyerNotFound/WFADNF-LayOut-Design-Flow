@@ -54,6 +54,7 @@ import com.andyer.layoutflow.model.FlowEdge
 import com.andyer.layoutflow.model.FlowProject
 import com.andyer.layoutflow.model.arrowHead
 import com.andyer.layoutflow.model.contains
+import com.andyer.layoutflow.model.orderedEdges
 import com.andyer.layoutflow.model.displayLabel
 import com.andyer.layoutflow.model.edgeGeometry
 import com.andyer.layoutflow.model.platformInfo
