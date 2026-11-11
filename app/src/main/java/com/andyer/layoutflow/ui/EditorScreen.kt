@@ -38,6 +38,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
@@ -67,6 +68,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.andyer.layoutflow.BuildConfig
 import com.andyer.layoutflow.model.ComponentSpec
+import com.andyer.layoutflow.model.bounds
 import com.andyer.layoutflow.model.componentSpec
 import com.andyer.layoutflow.model.nodeById
 import com.andyer.layoutflow.model.platformInfo
@@ -78,6 +80,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.OutputStream
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 private data class TemplateDragState(val spec: ComponentSpec, val point: Offset)
@@ -112,6 +115,28 @@ fun EditorScreen(vm: EditorViewModel) {
         if (viewportSize.width > 0 && viewportSize.height > 0) {
             vm.fitToContent(viewportSize.width.toFloat(), viewportSize.height.toFloat(), density)
         }
+    }
+
+    fun initialView() {
+        if (viewportSize.width <= 0 || viewportSize.height <= 0) return
+        val project = vm.state.value.project
+        val bounds = project.bounds() ?: return
+        val focusWidth = min(bounds.width, 700f)
+        val focusHeight = min(bounds.height, 620f)
+        val scale = minOf(
+            1f,
+            viewportSize.width * 0.9f / (focusWidth * density),
+            viewportSize.height * 0.9f / (focusHeight * density),
+        ).coerceAtLeast(0.2f)
+        val focusX = bounds.left + focusWidth / 2f
+        val focusY = bounds.top + focusHeight / 2f
+        vm.setView(
+            scale,
+            Offset(
+                viewportSize.width / 2f - focusX * scale * density,
+                viewportSize.height / 2f - focusY * scale * density,
+            ),
+        )
     }
 
     fun canvasCenterWorld(): Offset {
@@ -230,7 +255,7 @@ fun EditorScreen(vm: EditorViewModel) {
     LaunchedEffect(viewportSize) {
         if (!didInitialFit && viewportSize.width > 0 && viewportSize.height > 0) {
             didInitialFit = true
-            fit()
+            initialView()
         }
     }
 
@@ -244,6 +269,9 @@ fun EditorScreen(vm: EditorViewModel) {
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
             topBar = {
                 TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    ),
                     title = {
                         Column {
                             Text(

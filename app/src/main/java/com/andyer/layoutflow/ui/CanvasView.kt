@@ -9,10 +9,13 @@ import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -52,6 +55,7 @@ import com.andyer.layoutflow.model.arrowHead
 import com.andyer.layoutflow.model.contains
 import com.andyer.layoutflow.model.displayLabel
 import com.andyer.layoutflow.model.edgeGeometry
+import com.andyer.layoutflow.model.platformInfo
 import kotlin.math.abs
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -188,6 +192,37 @@ fun FlowCanvas(
                     },
                     onPortCancel = { connection = null },
                 )
+                }
+            }
+        }
+
+        Box(Modifier.fillMaxSize()) {
+            for (node in state.project.nodes) {
+                val screenX = state.pan.x + node.x * density * state.scale
+                val screenY = state.pan.y + node.y * density * state.scale - 15f * density
+                val platform = platformInfo(node.platform)
+                Row(
+                    modifier = Modifier
+                        .offset { IntOffset(screenX.roundToInt(), screenY.roundToInt()) }
+                        .width((node.width * state.scale).coerceAtLeast(44f).dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box(
+                        Modifier
+                            .size(6.dp)
+                            .clip(CircleShape)
+                            .background(Color(platform.color.toInt())),
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        text = node.name,
+                        fontSize = 9.sp,
+                        lineHeight = 11.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = if (node.id == state.selectedNodeId) scheme.primary else scheme.onSurfaceVariant,
+                        fontWeight = if (node.id == state.selectedNodeId) FontWeight.SemiBold else FontWeight.Normal,
+                    )
                 }
             }
         }

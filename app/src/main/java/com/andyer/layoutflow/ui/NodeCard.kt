@@ -135,31 +135,6 @@ fun FlowNodeCard(
                 )
             },
     ) {
-        Row(
-            modifier = Modifier
-                .offset(y = (-17).dp)
-                .width(node.width.dp)
-                .height(15.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(7.dp)
-                    .clip(CircleShape)
-                    .background(Color(platform.color.toInt())),
-            )
-            Spacer(Modifier.width(4.dp))
-            Text(
-                text = node.name,
-                fontSize = 9.sp,
-                lineHeight = 11.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                color = if (selected) scheme.primary else scheme.onSurfaceVariant,
-                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
-            )
-        }
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
