@@ -7,8 +7,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.andyer.layoutflow.ui.EditorScreen
+import com.andyer.layoutflow.ui.EditorViewModel
 import com.andyer.layoutflow.ui.LayoutFlowTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,8 +19,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             LayoutFlowTheme {
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Text("LayOut Flow")
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background,
+                ) {
+                    val vm: EditorViewModel = viewModel()
+                    EditorScreen(vm)
                 }
             }
         }
