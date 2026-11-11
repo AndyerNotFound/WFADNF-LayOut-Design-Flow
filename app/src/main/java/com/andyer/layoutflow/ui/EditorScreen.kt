@@ -364,9 +364,6 @@ fun EditorScreen(vm: EditorViewModel) {
             bottomBar = {
                 PaletteShelf(
                     onOpenCatalog = { showCatalog = true },
-                    onTapSpec = { spec ->
-                        addAtCenter(spec)
-                    },
                     onDragStart = { spec, point ->
                         templateDrag = TemplateDragState(spec, point)
                     },
@@ -409,7 +406,8 @@ fun EditorScreen(vm: EditorViewModel) {
                         dragPoint = null
                     },
                     onNodeDragPoint = { point ->
-                        dragPoint = viewportOrigin + point
+                        val rootPoint = viewportOrigin + point
+                        dragPoint = if (rootPoint.y < 240f * density) rootPoint else null
                     },
                     onNodeDragEnd = { id, center ->
                         val rootPoint = viewportOrigin + center
@@ -538,7 +536,7 @@ fun EditorScreen(vm: EditorViewModel) {
         )
     }
 
-    if (state.selectedNodeId != null || state.selectedEdgeId != null) {
+    if (state.inspectRequested && (state.selectedNodeId != null || state.selectedEdgeId != null)) {
         InspectorSheet(
             project = project,
             node = project.nodeById(state.selectedNodeId),

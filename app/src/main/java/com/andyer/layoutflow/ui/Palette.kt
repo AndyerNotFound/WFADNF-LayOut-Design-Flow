@@ -59,7 +59,6 @@ import kotlin.math.roundToInt
 @Composable
 fun PaletteShelf(
     onOpenCatalog: () -> Unit,
-    onTapSpec: (ComponentSpec) -> Unit,
     onDragStart: (ComponentSpec, Offset) -> Unit,
     onDragMove: (Offset) -> Unit,
     onDragEnd: (Offset?) -> Unit,
@@ -92,7 +91,6 @@ fun PaletteShelf(
                 lazyItems(QUICK_SPECS, key = { it.id }) { spec ->
                     QuickSpecTile(
                         spec = spec,
-                        onClick = { onTapSpec(spec) },
                         onDragStart = { onDragStart(spec, it) },
                         onDragMove = onDragMove,
                         onDragEnd = onDragEnd,
@@ -106,7 +104,6 @@ fun PaletteShelf(
 @Composable
 private fun QuickSpecTile(
     spec: ComponentSpec,
-    onClick: () -> Unit,
     onDragStart: (Offset) -> Unit,
     onDragMove: (Offset) -> Unit,
     onDragEnd: (Offset?) -> Unit,
@@ -134,8 +131,7 @@ private fun QuickSpecTile(
                     onDragEnd = { onDragEnd(point) },
                     onDragCancel = { onDragEnd(null) },
                 )
-            }
-            .clickable(onClick = onClick),
+            },
         shape = RoundedCornerShape(14.dp),
         color = scheme.surfaceContainerLow,
         border = androidx.compose.foundation.BorderStroke(1.dp, scheme.outlineVariant),
@@ -186,6 +182,7 @@ fun CatalogSheet(
         Column(
             modifier = Modifier
                 .fillMaxHeight(0.9f)
+                .navigationBarsPadding()
                 .padding(horizontal = 16.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {

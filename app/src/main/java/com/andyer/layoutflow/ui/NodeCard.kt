@@ -808,15 +808,15 @@ private fun ScreenPreview(node: FlowNode, accent: Color, label: String) {
         modifier = Modifier
             .fillMaxSize()
             .clip(RoundedCornerShape(12.dp))
-            .background(Color.White),
+            .background(scheme.surface),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().height(14.dp).padding(horizontal = 7.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text("9:41", fontSize = 6.sp, color = Color(0xFF49454F))
+            Text("9:41", fontSize = 6.sp, color = scheme.onSurfaceVariant)
             Spacer(Modifier.weight(1f))
-            Box(Modifier.width(14.dp).height(5.dp).clip(RoundedCornerShape(3.dp)).background(Color(0xFF49454F)))
+            Box(Modifier.width(14.dp).height(5.dp).clip(RoundedCornerShape(3.dp)).background(scheme.onSurfaceVariant))
         }
         Box(
             modifier = Modifier

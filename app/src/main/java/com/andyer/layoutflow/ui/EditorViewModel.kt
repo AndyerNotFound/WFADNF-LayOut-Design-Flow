@@ -28,6 +28,7 @@ data class EditorUiState(
     val project: FlowProject = FlowProject(),
     val selectedNodeId: String? = null,
     val selectedEdgeId: String? = null,
+    val inspectRequested: Boolean = false,
     val scale: Float = 1f,
     val pan: Offset = Offset.Zero,
     val canUndo: Boolean = false,
@@ -115,15 +116,27 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun selectNode(id: String?) {
-        _state.value = _state.value.copy(selectedNodeId = id, selectedEdgeId = null)
+        _state.value = _state.value.copy(
+            selectedNodeId = id,
+            selectedEdgeId = null,
+            inspectRequested = id != null,
+        )
     }
 
     fun selectEdge(id: String?) {
-        _state.value = _state.value.copy(selectedEdgeId = id, selectedNodeId = null)
+        _state.value = _state.value.copy(
+            selectedEdgeId = id,
+            selectedNodeId = null,
+            inspectRequested = id != null,
+        )
     }
 
     fun clearSelection() {
-        _state.value = _state.value.copy(selectedNodeId = null, selectedEdgeId = null)
+        _state.value = _state.value.copy(
+            selectedNodeId = null,
+            selectedEdgeId = null,
+            inspectRequested = false,
+        )
     }
 
     fun renameProject(name: String) {
@@ -141,7 +154,7 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
     fun newProject() {
         record("project:new")
         publish(FlowProject(name = "未命名流程"))
-        _state.value = _state.value.copy(scale = 1f, pan = Offset(48f, 32f))
+        _state.value = _state.value.copy(scale = 1f, pan = Offset(48f, 32f), inspectRequested = false)
     }
 
     fun openProjectText(text: String): Boolean {
@@ -150,7 +163,7 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
             val normalized = normalize(parsed)
             record("project:open")
             publish(normalized)
-            _state.value = _state.value.copy(scale = 1f, pan = Offset(48f, 32f))
+            _state.value = _state.value.copy(scale = 1f, pan = Offset(48f, 32f), inspectRequested = false)
             true
         }.getOrElse {
             setMessage("无法读取项目：${it.message ?: "格式不正确"}")
@@ -213,7 +226,11 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
                 nextNodeSeq = seq + 1,
             ),
         )
-        _state.value = _state.value.copy(selectedNodeId = node.id, selectedEdgeId = null)
+        _state.value = _state.value.copy(
+            selectedNodeId = node.id,
+            selectedEdgeId = null,
+            inspectRequested = false,
+        )
     }
 
     fun duplicateNode(id: String) {
@@ -228,7 +245,11 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
         )
         record("node:duplicate")
         publish(project.copy(nodes = project.nodes + copy, nextNodeSeq = seq + 1))
-        _state.value = _state.value.copy(selectedNodeId = copy.id, selectedEdgeId = null)
+        _state.value = _state.value.copy(
+            selectedNodeId = copy.id,
+            selectedEdgeId = null,
+            inspectRequested = false,
+        )
     }
 
     fun deleteNode(id: String) {
@@ -241,11 +262,15 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
                 edges = project.edges.filterNot { it.from == id || it.to == id },
             ),
         )
-        _state.value = _state.value.copy(selectedNodeId = null)
+        _state.value = _state.value.copy(selectedNodeId = null, inspectRequested = false)
     }
 
     fun beginNodeDrag(id: String) {
-        selectNode(id)
+        _state.value = _state.value.copy(
+            selectedNodeId = id,
+            selectedEdgeId = null,
+            inspectRequested = false,
+        )
         record("node:drag:$id")
     }
 
@@ -282,7 +307,11 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun beginNodeResize(id: String) {
-        selectNode(id)
+        _state.value = _state.value.copy(
+            selectedNodeId = id,
+            selectedEdgeId = null,
+            inspectRequested = false,
+        )
         record("node:resize:$id")
     }
 
@@ -337,7 +366,11 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
         )
         record("edge:add")
         publish(project.copy(edges = project.edges + edge, nextEdgeSeq = seq + 1))
-        _state.value = _state.value.copy(selectedEdgeId = edge.id, selectedNodeId = null)
+        _state.value = _state.value.copy(
+            selectedEdgeId = edge.id,
+            selectedNodeId = null,
+            inspectRequested = true,
+        )
         return edge.id
     }
 
@@ -346,7 +379,7 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
         if (project.edges.none { it.id == id }) return
         record("edge:delete")
         publish(project.copy(edges = project.edges.filterNot { it.id == id }))
-        _state.value = _state.value.copy(selectedEdgeId = null)
+        _state.value = _state.value.copy(selectedEdgeId = null, inspectRequested = false)
     }
 
     fun editEdge(id: String, undoKey: String?, transform: (FlowEdge) -> FlowEdge) {

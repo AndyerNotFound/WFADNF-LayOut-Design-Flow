@@ -31,7 +31,7 @@ The built-in catalog contains 110 templates:
 
 All templates use Material Design 3 styling by default. A node can switch its platform and accent colour without losing its structure.
 
-The interaction catalog covers 23 triggers (tap, long press, double tap, four swipe directions, drag, pinch, scroll, focus, hover, key, back, load, timer, value change, notification, voice, shake, deep link, custom), 16 actions, 14 transitions (fade, fade through, four slides, shared axis X/Y/Z, container transform, scale, reveal, none, custom) and 6 easing curves.
+The interaction catalog covers 22 triggers (tap, long press, double tap, four swipe directions, drag, pinch, scroll, focus, hover, key, back, load, timer, value change, notification, voice, shake, deep link, custom), 16 actions, 14 transitions (fade, fade through, four slides, shared axis X/Y/Z, container transform, scale, reveal, none, custom) and 6 easing curves.
 
 ## Export formats
 

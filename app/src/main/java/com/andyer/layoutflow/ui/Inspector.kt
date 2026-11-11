@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -84,6 +85,7 @@ fun InspectorSheet(
         Column(
             modifier = Modifier
                 .fillMaxHeight(0.92f)
+                .navigationBarsPadding()
                 .imePadding(),
         ) {
             LazyColumn(
