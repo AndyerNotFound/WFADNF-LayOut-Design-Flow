@@ -87,6 +87,7 @@ jobs:
           script: |
             ./gradlew --no-daemon connectedDebugAndroidTest
             mkdir -p out
+            adb shell am force-stop com.andyer.layoutflow
             adb shell am start -n com.andyer.layoutflow/.MainActivity
             sleep 4
             adb exec-out screencap -p > out/smoke.png
