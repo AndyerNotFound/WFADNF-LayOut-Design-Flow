@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -123,8 +124,8 @@ fun FlowCanvas(
                     transformOrigin = TransformOrigin(0f, 0f)
                 },
         ) {
-            val ordered = state.project.nodes.sortedBy { it.id == state.selectedNodeId }
-            for (node in ordered) {
+            for (node in state.project.nodes) {
+                key(node.id) {
                 FlowNodeCard(
                     node = node,
                     selected = node.id == state.selectedNodeId,
@@ -187,6 +188,7 @@ fun FlowCanvas(
                     },
                     onPortCancel = { connection = null },
                 )
+                }
             }
         }
 
@@ -388,8 +390,9 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawGrid(
     scale: Float,
     density: Float,
 ) {
-    val spacing = 24.dp.toPx() * scale
-    if (spacing < 8f) return
+    val base = 24.dp.toPx()
+    var spacing = base * scale
+    while (spacing < base) spacing *= 2f
     val dotColor = color.copy(alpha = 0.35f)
     val startX = ((pan.x % spacing) + spacing) % spacing
     val startY = ((pan.y % spacing) + spacing) % spacing

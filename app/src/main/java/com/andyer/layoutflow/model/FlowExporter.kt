@@ -2,6 +2,7 @@ package com.andyer.layoutflow.model
 
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlin.math.roundToInt
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -88,7 +89,7 @@ fun FlowProject.toSvgText(): String {
             appendLine("\" fill=\"$color\"/>")
             val (mx, my) = g.pointAt(0.5f)
             val text = esc(edge.displayLabel())
-            val labelWidth = (text.length * 6.1f + 18f).coerceAtMost(230f)
+            val labelWidth = (text.length * 8.0f + 18f).coerceAtMost(260f)
             appendLine("<rect x=\"${fmt(mx - labelWidth / 2f)}\" y=\"${fmt(my - 10f)}\" width=\"${fmt(labelWidth)}\" height=\"20\" rx=\"10\" fill=\"#EADDFF\" stroke=\"#CAC4D0\" stroke-width=\"0.8\"/>")
             appendLine("<text x=\"${fmt(mx)}\" y=\"${fmt(my + 4f)}\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"9.5\" fill=\"#21005D\">$text</text>")
         }
@@ -100,8 +101,10 @@ fun FlowProject.toSvgText(): String {
             appendLine("<rect x=\"${fmt(x)}\" y=\"${fmt(y)}\" width=\"${fmt(node.width)}\" height=\"${fmt(node.height)}\" rx=\"${fmt(node.corner)}\" fill=\"#F7F2FA\" stroke=\"#79747E\" stroke-width=\"1.2\"/>")
             appendLine("<rect x=\"${fmt(x + 10f)}\" y=\"${fmt(y + 10f)}\" width=\"24\" height=\"16\" rx=\"4\" fill=\"#${platform.color.toString(16).takeLast(6)}\"/>")
             appendLine("<text x=\"${fmt(x + 22f)}\" y=\"${fmt(y + 21.5f)}\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"9\" font-weight=\"700\" fill=\"#FFFFFF\">${esc(platform.short)}</text>")
-            appendLine("<text x=\"${fmt(x + 40f)}\" y=\"${fmt(y + 22f)}\" font-family=\"sans-serif\" font-size=\"10.5\" font-weight=\"600\" fill=\"#1D1B20\">${esc(ellipsizeSvg(node.name, 18))}</text>")
-            appendLine("<text x=\"${fmt(x + 12f)}\" y=\"${fmt(y + 44f)}\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"500\" fill=\"#49454F\">${esc(ellipsizeSvg(node.text.ifBlank { node.name }, 16))}</text>")
+            val nameChars = (node.width / 9.5f).roundToInt().coerceAtLeast(4)
+            val textChars = (node.width / 8.5f).roundToInt().coerceAtLeast(4)
+            appendLine("<text x=\"${fmt(x + 40f)}\" y=\"${fmt(y + 22f)}\" font-family=\"sans-serif\" font-size=\"10.5\" font-weight=\"600\" fill=\"#1D1B20\">${esc(ellipsizeSvg(node.name, nameChars))}</text>")
+            appendLine("<text x=\"${fmt(x + 12f)}\" y=\"${fmt(y + 44f)}\" font-family=\"sans-serif\" font-size=\"15\" font-weight=\"500\" fill=\"#49454F\">${esc(ellipsizeSvg(node.text.ifBlank { node.name }, textChars))}</text>")
             val bodyTop = y + 54f
             val bodyHeight = (node.height - 62f).coerceAtLeast(8f)
             appendLine("<rect x=\"${fmt(x + 10f)}\" y=\"${fmt(bodyTop)}\" width=\"${fmt((node.width - 20f).coerceAtLeast(8f))}\" height=\"${fmt(bodyHeight)}\" rx=\"10\" fill=\"#ECE6F0\"/>")

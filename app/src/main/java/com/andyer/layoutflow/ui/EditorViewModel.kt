@@ -294,6 +294,7 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun endNodeDrag(id: String) {
+        lastUndoKey = null
         val project = _state.value.project
         val node = project.nodeById(id) ?: return
         if (!project.snapToGrid) {

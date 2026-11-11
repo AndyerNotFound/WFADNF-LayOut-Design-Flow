@@ -110,6 +110,20 @@ fun demoProject(): FlowProject {
             corner = 24f,
             elevation = 3f,
         ),
+        FlowNode(
+            id = "n9",
+            specId = "android.screen",
+            name = "个人页",
+            platform = "android",
+            kind = "screen",
+            x = 780f,
+            y = 520f,
+            width = 280f,
+            height = 500f,
+            text = "我的",
+            corner = 24f,
+            elevation = 2f,
+        ),
     )
     val edges = listOf(
         FlowEdge(
@@ -144,10 +158,10 @@ fun demoProject(): FlowProject {
         ),
         FlowEdge(
             id = "e4",
-            from = "n5",
-            to = "n7",
-            trigger = "swipeLeft",
-            action = "updateState",
+            from = "n7",
+            to = "n9",
+            trigger = "click",
+            action = "navigate",
             transition = "sharedAxisY",
             duration = 250,
             easing = "standard",
@@ -157,7 +171,7 @@ fun demoProject(): FlowProject {
         name = "登录到详情 · 示例流程",
         nodes = nodes,
         edges = edges,
-        nextNodeSeq = 9,
+        nextNodeSeq = 10,
         nextEdgeSeq = 5,
     )
 }
