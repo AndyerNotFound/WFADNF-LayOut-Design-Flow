@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.nestedscroll.nestedScroll
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items as lazyItems
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -48,11 +49,14 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.andyer.layoutflow.model.COMPONENTS
@@ -179,6 +183,7 @@ fun CatalogSheet(
     onAdd: (ComponentSpec) -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val dragGuard = rememberSheetDragBlocker()
     var query by remember { mutableStateOf("") }
     var platformFilter by remember { mutableStateOf("all") }
     val filtered = COMPONENTS.filter { spec ->
@@ -192,6 +197,7 @@ fun CatalogSheet(
         Column(
             modifier = Modifier
                 .fillMaxHeight(0.9f)
+                .nestedScroll(dragGuard)
                 .navigationBarsPadding()
                 .imePadding()
                 .padding(horizontal = 16.dp),
@@ -384,5 +390,28 @@ private fun ComponentGlyph(spec: ComponentSpec, modifier: Modifier) {
                 drawCircle(color, radius = w * 0.14f, center = center)
             }
         }
+    }
+}
+
+/**
+ * Keeps a modal sheet still while its scrollable content sits at a boundary.
+ *
+ * Material3 hands the drag deltas and fling velocity that the inner list can no
+ * longer consume to the sheet itself, so a full-height sheet dips and snaps back
+ * every time the user scrolls past the end of the content. Consuming that
+ * leftover vertical input keeps the sheet in place and leaves dismissal to the
+ * drag handle and the explicit buttons.
+ */
+@Composable
+internal fun rememberSheetDragBlocker(): NestedScrollConnection = remember {
+    object : NestedScrollConnection {
+        override fun onPostScroll(
+            consumed: Offset,
+            available: Offset,
+            source: NestedScrollSource,
+        ): Offset = if (source == NestedScrollSource.Drag) Offset(0f, available.y) else Offset.Zero
+
+        override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity =
+            Velocity(0f, available.y)
     }
 }

@@ -84,6 +84,9 @@ fun FlowCanvas(
     val latestState by rememberUpdatedState(state)
     var connection by remember { mutableStateOf<ConnectionDrag?>(null) }
     val graphBox = Modifier.fillMaxSize()
+    val orderedEdges = remember(state.project, state.selectedEdgeId) {
+        state.project.orderedEdges(state.selectedEdgeId)
+    }
 
     Box(
         modifier = graphBox
@@ -112,7 +115,7 @@ fun FlowCanvas(
     ) {
         Canvas(Modifier.fillMaxSize()) {
             drawGrid(scheme.outlineVariant, state.pan, state.scale, density)
-            for (edge in state.project.edges) {
+            for (edge in orderedEdges) {
                 val screen = screenEdge(state.project, edge, state.pan, state.scale, density) ?: continue
                 drawScreenEdge(edge, screen, edge.id == state.selectedEdgeId, scheme.primary, scheme.outline)
             }
@@ -278,7 +281,7 @@ fun FlowCanvas(
         }
 
         Box(Modifier.fillMaxSize()) {
-            for (edge in state.project.edges) {
+            for (edge in orderedEdges) {
                 if (state.scale < 0.45f && edge.id != state.selectedEdgeId) continue
                 val screen = screenEdge(state.project, edge, state.pan, state.scale, density) ?: continue
                 val (midX, midY) = screen.pointAt(0.5f)

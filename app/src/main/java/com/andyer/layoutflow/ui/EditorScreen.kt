@@ -463,6 +463,7 @@ fun EditorScreen(vm: EditorViewModel) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Surface(
+                        modifier = Modifier.width(44.dp),
                         shape = RoundedCornerShape(16.dp),
                         tonalElevation = 3.dp,
                         shadowElevation = 4.dp,
@@ -651,7 +652,7 @@ fun EditorScreen(vm: EditorViewModel) {
 private fun ZoomButton(label: String, onClick: () -> Unit) {
     Box(
         modifier = Modifier
-            .size(42.dp)
+            .size(44.dp)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {

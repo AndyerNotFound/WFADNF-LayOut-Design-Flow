@@ -57,6 +57,19 @@ fun FlowProject.edgeById(id: String?): FlowEdge? = edges.firstOrNull { it.id == 
 fun FlowNode.contains(worldX: Float, worldY: Float): Boolean =
     worldX >= x && worldX <= x + width && worldY >= y && worldY <= y + height
 
+/**
+ * Draw order for connections: an edge follows the layer of the front-most node it
+ * touches, and the selected edge is always drawn last so it stays visible when
+ * connections cross. Ties keep insertion order, so a plain project looks
+ * unchanged until something is selected.
+ */
+fun FlowProject.orderedEdges(selectedEdgeId: String? = null): List<FlowEdge> {
+    val depth = nodes.withIndex().associate { (index, node) -> node.id to index }
+    return edges.sortedBy { edge ->
+        if (edge.id == selectedEdgeId) Int.MAX_VALUE else maxOf(depth[edge.from] ?: -1, depth[edge.to] ?: -1)
+    }
+}
+
 fun FlowProject.bounds(): RectD? {
     if (nodes.isEmpty()) return null
     var left = Float.MAX_VALUE
